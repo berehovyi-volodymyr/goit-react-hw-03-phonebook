@@ -4,6 +4,7 @@ import ContactList from './ContactList/ContactList';
 import Filter from './Filter/Filter';
 import { nanoid } from 'nanoid';
 
+const KEY = 'Contacts';
 export class App extends Component {
   state = {
     contacts: [
@@ -14,6 +15,21 @@ export class App extends Component {
     ],
     filter: '',
   };
+
+  componentDidMount() {
+    const contacts = JSON.parse(localStorage.getItem(KEY));
+    if (contacts?.length) {
+      this.setState({ contacts });
+    }
+  }
+
+  componentDidUpdate(prevState) {
+    const { contacts } = this.state;
+
+    if (prevState.contacts?.length !== contacts.length) {
+      localStorage.setItem(KEY, JSON.stringify(contacts));
+    }
+  }
 
   deleteContact = contactId => {
     this.setState(prevState => ({
